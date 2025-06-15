@@ -8,10 +8,10 @@ class FilialBase(BaseModel):
     nome: str
     estado: str
     tipo_link: str
-    
+
     class Config:
         from_attributes = True
-        
+
 class FilialCreate(BaseModel):
     nome: str
     estado: str
