@@ -19,3 +19,9 @@ def get_db():
         yield db
     finally:
         db.close()
+# rode no terminal uvicorn app.main:app --reload
+def init_db():
+    import model.models  # Import models to ensure they are registered with SQLAlchemy
+    Base.metadata.create_all(bind=engine)
+    print("Banco de dados inicializado com sucesso!")
+    

@@ -1,5 +1,11 @@
-import pyodbc
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from app.routers.route_log import app_router
 
-print("Drivers ODBC disponíveis:")
-for driver in pyodbc.drivers():
-    print(driver)
+app = FastAPI()
+
+
+app.include_router(app_router, prefix="/api", tags=["teste"])
+
+
+

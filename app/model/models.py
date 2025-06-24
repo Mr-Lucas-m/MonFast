@@ -2,7 +2,7 @@
 # coding: utf-8
 from sqlalchemy import Column, Integer, String, DateTime ,ForeignKey
 from sqlalchemy.orm import relationship
-from app.db.connection import Base
+from db.connection import Base
 
 # tabela de Unidades fisicas 
 class Filial(Base):
