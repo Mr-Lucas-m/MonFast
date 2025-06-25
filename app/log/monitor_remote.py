@@ -49,25 +49,25 @@ def testar_sql_server_fab_ma(fab ,host, db, user, pwd, port):
         resultados_conexoes[fab] = {"status": "ERRO", "host": host, "erro": e}
 
 # FAB-PARAISO
-def testar_sql_server_fab_paraiso(fab ,host, db, user, pwd, port):
-    import pyodbc
-    try:
-        conn = pyodbc.connect(
-            f"DRIVER={{SQL Server}};"
-            f"SERVER={host},{port};"
-            f"DATABASE={db};"
-            f"UID={user};"
-            f"PWD={pwd};"
-            "Encrypt=no;"
-            "TrustServerCertificate=yes;",
-            timeout=5
-        )
-        conn.close()
-        print(f"[✓] FAB-PARAISO OK: {host}")
-        resultados_conexoes[fab] = {"status": "OK", "host": host}
-    except Exception as e:
-        print(f"[X] FAB-PARAISO ERRO: {host} - {e}")
-        resultados_conexoes[fab] = {"status": "ERRO", "host": host, "erro": e}
+# def testar_sql_server_fab_paraiso(fab ,host, db, user, pwd, port):
+#     import pyodbc
+#     try:
+#         conn = pyodbc.connect(
+#             f"DRIVER={{SQL Server}};"
+#             f"SERVER={host},{port};"
+#             f"DATABASE={db};"
+#             f"UID={user};"
+#             f"PWD={pwd};"
+#             "Encrypt=no;"
+#             "TrustServerCertificate=yes;",
+#             timeout=5
+#         )
+#         conn.close()
+#         print(f"[✓] FAB-PARAISO OK: {host}")
+#         resultados_conexoes[fab] = {"status": "OK", "host": host}
+#     except Exception as e:
+#         print(f"[X] FAB-PARAISO ERRO: {host} - {e}")
+#         resultados_conexoes[fab] = {"status": "ERRO", "host": host, "erro": e}
 
 # FAB-ARAG
 def testar_sql_server_fab_arag(fab ,host, db, user, pwd, port):
@@ -135,7 +135,7 @@ def testar_sql_server_fab_toc(fab ,host, db, user, pwd, port):
 # Testar todas as conexões usando .env
 def testar_todas_conexoes():
     print("🔁 Iniciando teste de conexões...")
-    load_dotenv()
+    load_dotenv(override=True)
     total = int(os.getenv("TOTAL_CONEXOES", 0))
 
     if total == 0:
@@ -159,8 +159,8 @@ def testar_todas_conexoes():
             testar_sql_server_fab_toc(fab ,host, db, user, pwd, port)
         elif fab_upp == 'FAB-MA':
             testar_sql_server_fab_ma(fab ,host, db, user, pwd, port)
-        elif fab_upp == 'FAB-PARAISO':
-            testar_sql_server_fab_paraiso(fab ,host, db, user, pwd, port)
+        # elif fab_upp == 'FAB-PARAISO':
+        #     testar_sql_server_fab_paraiso(fab ,host, db, user, pwd, port)
         elif fab_upp == 'FAB-SIZA':
             testar_sql_server_fab_siza(fab ,host, db, user, pwd, port)
         elif fab_upp == 'FAB-ARAG':

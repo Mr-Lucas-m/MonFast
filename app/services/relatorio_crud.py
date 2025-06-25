@@ -1,3 +1,0 @@
-from log.monitor_remote import testar_todas_conexoes
-
-print(testar_todas_conexoes)

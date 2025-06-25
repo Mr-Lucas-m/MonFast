@@ -7,6 +7,14 @@ from routers.route_resulte import router as status_router
 
 app = FastAPI()
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"], # Específico para dev
+    allow_methods=["*"],
+    allow_headers=["*"],
+    expose_headers=["Content-Disposition"]
+)
+
 app.on_event("startup")
 def start_agendador():
     thread = Thread(target=iniciar_agendamento)
