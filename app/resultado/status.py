@@ -1,3 +1,3 @@
 # resultados da bacaça
 
-resultados_conexoes = {}
+resultados_conexoes: dict = {}
