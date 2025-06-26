@@ -5,6 +5,7 @@ import time
 import threading
 
 from resultado.status import resultados_conexoes
+from log.push_whatsapp import enviar_alerta_whatsapp
 
 # FAB-SIZA
 def testar_sql_server_fab_siza(fab ,host, db, user, pwd, port):
@@ -153,7 +154,7 @@ def testar_todas_conexoes():
         if not all([tipo, fab, host, port, db, user, pwd]):
             print(f"⚠️ Dados incompletos em CONN{i}, pulando...")
             continue
-        fab_upp = fab.upper()
+        fab_upp = fab.upper() # type: ignore 
 
         if fab_upp == 'FAB-TOC':
             testar_sql_server_fab_toc(fab ,host, db, user, pwd, port)
