@@ -1,12 +1,29 @@
 import os
-from dotenv import load_dotenv
-import schedule
 import time
+import schedule
 import threading
+from datetime import datetime, timedelta
+from dotenv import load_dotenv
 
 from resultado.status import resultados_conexoes
 from log.push_whatsapp import enviar_alerta_whatsapp
+from log.push_email import enviar_alerta_email
 
+# TEMPORIZADOR PARA ENVIO
+ultimo_alerta = {}
+INTERVALO_MINUTOS = 10
+def pode_enviar_alerta(fab: str):
+    """
+    Verifica se pode enviar um alerta para o responsavel a cada intervalo de tempo.
+    """
+    agora = datetime.now()
+    ultimo = ultimo_alerta.get(fab)
+    if not ultimo or agora - ultimo > timedelta(minutes=INTERVALO_MINUTOS):
+        ultimo_alerta[fab] = agora
+        return True
+    return False
+    
+# Testar conexão com SQL Server
 # FAB-SIZA
 def testar_sql_server_fab_siza(fab ,host, db, user, pwd, port):
     import pyodbc
@@ -27,6 +44,8 @@ def testar_sql_server_fab_siza(fab ,host, db, user, pwd, port):
     except Exception as e:
         print(f"[X] FAB-SIZA ERRO: {host} - {e}")
         resultados_conexoes[fab] = {"status": "ERRO", "host": host, "erro": e}
+        if pode_enviar_alerta(fab):
+            enviar_alerta_email(fab, str(e))
 
 # FAB-MA
 def testar_sql_server_fab_ma(fab ,host, db, user, pwd, port):
@@ -48,7 +67,8 @@ def testar_sql_server_fab_ma(fab ,host, db, user, pwd, port):
     except Exception as e:
         print(f"[X] FAB-MA ERRO: {host} - {e}")
         resultados_conexoes[fab] = {"status": "ERRO", "host": host, "erro": e}
-
+        if pode_enviar_alerta(fab):
+            enviar_alerta_email(fab, str(e))
 # FAB-PARAISO
 # def testar_sql_server_fab_paraiso(fab ,host, db, user, pwd, port):
 #     import pyodbc
@@ -90,7 +110,9 @@ def testar_sql_server_fab_arag(fab ,host, db, user, pwd, port):
     except Exception as e:
         print(f"[X] FAB-ARAG ERRO: {host} - {e}")
         resultados_conexoes[fab] = {"status": "ERRO", "host": host, "erro": e}
-
+        if pode_enviar_alerta(fab):
+            enviar_alerta_email(fab, str(e))
+            
 # FAB-SANTAREM
 def testar_sql_server_fab_santarem(fab ,host, db, user, pwd, port):
     import pyodbc
@@ -111,6 +133,8 @@ def testar_sql_server_fab_santarem(fab ,host, db, user, pwd, port):
     except Exception as e:
         print(f"[X] FAB-SANTAREM ERRO: {host} - {e}")
         resultados_conexoes[fab] = {"status": "ERRO", "host": host, "erro": e}
+        if pode_enviar_alerta(fab):
+            enviar_alerta_email(fab, str(e))
 
 # FAB-TOC
 def testar_sql_server_fab_toc(fab ,host, db, user, pwd, port):
@@ -132,7 +156,9 @@ def testar_sql_server_fab_toc(fab ,host, db, user, pwd, port):
     except Exception as e:
         print(f"[X] FAB-TOC ERRO: {host} - {e}")
         resultados_conexoes[fab] = {"status": "ERRO", "host": host, "erro": e}
-
+        if pode_enviar_alerta(fab):
+            enviar_alerta_email(fab, str(e))
+            
 # Testar todas as conexões usando .env
 def testar_todas_conexoes():
     print("🔁 Iniciando teste de conexões...")

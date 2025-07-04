@@ -27,3 +27,6 @@ if __name__ == "__main__":
         print(f"Mensagem enviada com sucesso: {msg}")
     except Exception as e:
         print(f"Erro ao enviar mensagem via WhatsApp: {e}")
+        
+        
+        
