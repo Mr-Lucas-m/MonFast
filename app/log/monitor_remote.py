@@ -2,31 +2,26 @@ import os
 import time
 import schedule
 import threading
+import pyodbc
+import mysql.connector
+from mysql.connector import Error as MySQLError
 from datetime import datetime, timedelta
 from dotenv import load_dotenv
 
+from app.components.uteis import pode_enviar_alerta
 from resultado.status import resultados_conexoes
 from log.push_whatsapp import enviar_alerta_whatsapp
 from log.push_email import enviar_alerta_email
 
-# TEMPORIZADOR PARA ENVIO
-ultimo_alerta = {}
-INTERVALO_MINUTOS = 10
-def pode_enviar_alerta(fab: str):
-    """
-    Verifica se pode enviar um alerta para o responsavel a cada intervalo de tempo.
-    """
-    agora = datetime.now()
-    ultimo = ultimo_alerta.get(fab)
-    if not ultimo or agora - ultimo > timedelta(minutes=INTERVALO_MINUTOS):
-        ultimo_alerta[fab] = agora
-        return True
-    return False
-    
-# Testar conexão com SQL Server
+# Teste conexão com MySQL ""mysql-connector-python""
+
+def testar_mysql():
+    pass
+
+
+# Testar conexão com SQL Server ""pyodbc"" [ODBC]
 # FAB-SIZA
 def testar_sql_server_fab_siza(fab ,host, db, user, pwd, port):
-    import pyodbc
     try:
         conn = pyodbc.connect(
             f"DRIVER={{SQL Server}};"
@@ -49,7 +44,6 @@ def testar_sql_server_fab_siza(fab ,host, db, user, pwd, port):
 
 # FAB-MA
 def testar_sql_server_fab_ma(fab ,host, db, user, pwd, port):
-    import pyodbc
     try:
         conn = pyodbc.connect(
             f"DRIVER={{SQL Server}};"
@@ -69,30 +63,9 @@ def testar_sql_server_fab_ma(fab ,host, db, user, pwd, port):
         resultados_conexoes[fab] = {"status": "ERRO", "host": host, "erro": e}
         if pode_enviar_alerta(fab):
             enviar_alerta_email(fab, str(e))
-# FAB-PARAISO
-# def testar_sql_server_fab_paraiso(fab ,host, db, user, pwd, port):
-#     import pyodbc
-#     try:
-#         conn = pyodbc.connect(
-#             f"DRIVER={{SQL Server}};"
-#             f"SERVER={host},{port};"
-#             f"DATABASE={db};"
-#             f"UID={user};"
-#             f"PWD={pwd};"
-#             "Encrypt=no;"
-#             "TrustServerCertificate=yes;",
-#             timeout=5
-#         )
-#         conn.close()
-#         print(f"[✓] FAB-PARAISO OK: {host}")
-#         resultados_conexoes[fab] = {"status": "OK", "host": host}
-#     except Exception as e:
-#         print(f"[X] FAB-PARAISO ERRO: {host} - {e}")
-#         resultados_conexoes[fab] = {"status": "ERRO", "host": host, "erro": e}
 
 # FAB-ARAG
 def testar_sql_server_fab_arag(fab ,host, db, user, pwd, port):
-    import pyodbc
     try:
         conn = pyodbc.connect(
             f"DRIVER={{SQL Server}};"
@@ -115,7 +88,6 @@ def testar_sql_server_fab_arag(fab ,host, db, user, pwd, port):
             
 # FAB-SANTAREM
 def testar_sql_server_fab_santarem(fab ,host, db, user, pwd, port):
-    import pyodbc
     try:
         conn = pyodbc.connect(
             f"DRIVER={{SQL Server}};"
@@ -138,7 +110,6 @@ def testar_sql_server_fab_santarem(fab ,host, db, user, pwd, port):
 
 # FAB-TOC
 def testar_sql_server_fab_toc(fab ,host, db, user, pwd, port):
-    import pyodbc
     try:
         conn = pyodbc.connect(
             f"DRIVER={{SQL Server}};"
@@ -186,8 +157,6 @@ def testar_todas_conexoes():
             testar_sql_server_fab_toc(fab ,host, db, user, pwd, port)
         elif fab_upp == 'FAB-MA':
             testar_sql_server_fab_ma(fab ,host, db, user, pwd, port)
-        # elif fab_upp == 'FAB-PARAISO':
-        #     testar_sql_server_fab_paraiso(fab ,host, db, user, pwd, port)
         elif fab_upp == 'FAB-SIZA':
             testar_sql_server_fab_siza(fab ,host, db, user, pwd, port)
         elif fab_upp == 'FAB-ARAG':
