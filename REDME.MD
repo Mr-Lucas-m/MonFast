@@ -3,37 +3,34 @@
     MONFAST/
 │
 ├── app/
-│   ├── db/
-│   │   ├── connection.py         ← Conexão com o PostgreSQL via SQLAlchemy
-│   │   └── 
+│   │
+│   ├── components/
+│   │   └── uteis.py                        ←  Logicas uteis para o script principal.
+│   │
 │   │
 │   ├── Services/
-│   │   ├──         ← (LOGICA DE NEGOCIO CRUD)
-│   │   └── 
+│   │   ├── relatorio_crud.py (vazio)        ← (LOGICA DE NEGOCIO CRUD)
+│   │    
 │   │
 │   ├── log/
-│   │   ├── monitor.py            ← Monitoramento contínuo dos IPs (ping, logs)
-│   │   └── 
-│   │
-│   ├── model/
-│   │   ├── models.py             ← Modelos SQLAlchemy (Filial, Conexao, Log)
-│   │   └── y
+│   │   ├── monitor_remote.py            ← Monitoramento contínuo dos IPs (ping, logs)
+│   │   └── push_email.py 
+│   │   └── push_whatsapp.py
 │   │
 │   ├── routers/
-│   │   ├── route.py              ← Rotas de API (GET/POST de conexões, filiais, logs)
+│   │   ├── route_resulte.py              ← Rotas de API (GET/POST de conexões, filiais, logs)
 │   │   └──
 │   │
-│   ├── schema/
-│   │   ├── filial_schem.py            ← Schemas do Pydantic (Entrada/Saída da API)
-│   │   ├── conexao_schem.py
-│   │   ├── log_schem.py
-|   |   └── relatorio_schem.py
+│   ├── resultado/
+│   │   └── status.py              ← Onde armazena os resultados das conexoes em variavel Global.
+│   │
 │   │
 │   ├── core/
 │   │   ├── config.py             ← Carrega variáveis de ambiente (.env)
 │   │   └── 
-│
-├── .env                          ← Variáveis do PostgreSQL (DATABASE_URL etc.)
+│   ├── main.py
+├   ├── teste.py
+├── .env                          ← Variáveis de banco, email, whatsapp (DATABASE_URL etc.)
 ├── requirements.txt              ← Dependências do projeto
 ├── main.py                       ← Inicialização do FastAPI + inclusão de rotas
 └── README.md                     ← (Opcional) Documentação do projeto
