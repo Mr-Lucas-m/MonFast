@@ -1,22 +1,38 @@
 import os
 import time
 import schedule
-import threading
 import pyodbc
 import mysql.connector
 from mysql.connector import Error as MySQLError
-from datetime import datetime, timedelta
 from dotenv import load_dotenv
 
-from app.components.uteis import pode_enviar_alerta
+from components.uteis import pode_enviar_alerta
 from resultado.status import resultados_conexoes
-from log.push_whatsapp import enviar_alerta_whatsapp
 from log.push_email import enviar_alerta_email
 
 # Teste conexão com MySQL ""mysql-connector-python""
 
-def testar_mysql():
-    pass
+def testar_conexao_mysql(fab, host, db, user, pwd, port):
+    try:
+        conn = mysql.connector.connect(
+            host=host,
+            port=int(port),
+            database=db,
+            user=user,
+            password=pwd,
+            connect_timeout=5
+        )
+        if conn.is_connected():
+            print(f"[✓] {fab} OK (MySQL): {host}")
+            resultados_conexoes[fab] = {"status": "OK", "host": host}
+            conn.close()
+        else:
+            raise Exception("Não conectado")
+    except MySQLError as e:
+        print(f"[X] {fab} ERRO (MySQL): {host} - {e}")
+        resultados_conexoes[fab] = {"status": "ERRO", "host": host, "erro": str(e)}
+        if pode_enviar_alerta(fab):
+            enviar_alerta_email(fab, str(e))
 
 
 # Testar conexão com SQL Server ""pyodbc"" [ODBC]
@@ -151,20 +167,26 @@ def testar_todas_conexoes():
         if not all([tipo, fab, host, port, db, user, pwd]):
             print(f"⚠️ Dados incompletos em CONN{i}, pulando...")
             continue
-        fab_upp = fab.upper() # type: ignore 
+        if tipo == 'sqlserver':
+            fab_upp = fab.upper() # type: ignore 
 
-        if fab_upp == 'FAB-TOC':
-            testar_sql_server_fab_toc(fab ,host, db, user, pwd, port)
-        elif fab_upp == 'FAB-MA':
-            testar_sql_server_fab_ma(fab ,host, db, user, pwd, port)
-        elif fab_upp == 'FAB-SIZA':
-            testar_sql_server_fab_siza(fab ,host, db, user, pwd, port)
-        elif fab_upp == 'FAB-ARAG':
-            testar_sql_server_fab_arag(fab ,host, db, user, pwd, port)
-        elif fab_upp == 'FAB-SANTAREM':
-            testar_sql_server_fab_santarem(fab ,host, db, user, pwd, port)
+            if fab_upp == 'FAB-TOC':
+                testar_sql_server_fab_toc(fab ,host, db, user, pwd, port)
+            elif fab_upp == 'FAB-MA':
+                testar_sql_server_fab_ma(fab ,host, db, user, pwd, port)
+            elif fab_upp == 'FAB-SIZA':
+                testar_sql_server_fab_siza(fab ,host, db, user, pwd, port)
+            elif fab_upp == 'FAB-ARAG':
+                testar_sql_server_fab_arag(fab ,host, db, user, pwd, port)
+            elif fab_upp == 'FAB-SANTAREM':
+                testar_sql_server_fab_santarem(fab ,host, db, user, pwd, port)
+            else:
+                print(f"[!] FAB de conexão não encontrada: {fab}")
+        elif tipo == 'mysql':
+            testar_conexao_mysql(fab, host, db, user, pwd, port)
+
         else:
-            print(f"[!] FAB de conexão não encontrada: {fab}")
+            print(f"[!] Tipo de conexão desconhecido: {tipo} (FAB: {fab})")
 
 # Agendamento com schedule
 def iniciar_agendamento():

@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 # TEMPORIZADOR PARA ENVIO
 
 ultimo_alerta = {}
-INTERVALO_MINUTOS = 10
+INTERVALO_MINUTOS = 25
 def pode_enviar_alerta(fab: str):
     """
     Verifica se pode enviar um alerta para o responsavel a cada intervalo de tempo.
