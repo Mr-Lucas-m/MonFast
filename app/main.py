@@ -1,8 +1,8 @@
 from fastapi import FastAPI
 from threading import Thread
 from fastapi.middleware.cors import CORSMiddleware
-from log.monitor_remote import iniciar_agendamento
-from routers.route_resulte import router as status_router
+from app.log.monitor_remote import iniciar_agendamento
+from app.routers.route_resulte import router as status_router
 
 
 app = FastAPI()

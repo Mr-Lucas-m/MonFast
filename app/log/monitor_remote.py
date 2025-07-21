@@ -6,9 +6,9 @@ import mysql.connector
 from mysql.connector import Error as MySQLError
 from dotenv import load_dotenv
 
-from components.uteis import pode_enviar_alerta
-from resultado.status import resultados_conexoes
-from log.push_email import enviar_alerta_email
+from app.components.uteis import pode_enviar_alerta
+from app.resultado.status import resultados_conexoes
+from app.log.push_email import enviar_alerta_email
 
 # Teste conexão com MySQL ""mysql-connector-python""
 

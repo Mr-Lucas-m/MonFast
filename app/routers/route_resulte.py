@@ -1,6 +1,6 @@
 # routers/route_result.py
 from fastapi import APIRouter
-from resultado.status import resultados_conexoes
+from app.resultado.status import resultados_conexoes
 
 router = APIRouter()
 
