@@ -80,6 +80,28 @@ def testar_sql_server_fab_ma(fab ,host, db, user, pwd, port):
         if pode_enviar_alerta(fab):
             enviar_alerta_email(fab, str(e))
 
+# FAB-MA-Secundaria
+def testar_sql_server_fab_ma_secundaria(fab ,host, db, user, pwd, port):
+    try:
+        conn = pyodbc.connect(
+            f"DRIVER={{SQL Server}};"
+            f"SERVER={host},{port};"
+            f"DATABASE={db};"
+            f"UID={user};"
+            f"PWD={pwd};"
+            "Encrypt=no;"
+            "TrustServerCertificate=yes;",
+            timeout=5
+        )
+        conn.close()
+        print(f"[✓] FAB-MA OK: {host}")
+        resultados_conexoes[fab] = {"status": "OK", "host": host}
+    except Exception as e:
+        print(f"[X] FAB-MA ERRO: {host} - {e}")
+        resultados_conexoes[fab] = {"status": "ERRO", "host": host, "erro": e}
+        # if pode_enviar_alerta(fab):
+        #     enviar_alerta_email(fab, str(e))
+            
 # FAB-ARAG
 def testar_sql_server_fab_arag(fab ,host, db, user, pwd, port):
     try:
@@ -174,6 +196,8 @@ def testar_todas_conexoes():
                 testar_sql_server_fab_toc(fab ,host, db, user, pwd, port)
             elif fab_upp == 'FAB-MA':
                 testar_sql_server_fab_ma(fab ,host, db, user, pwd, port)
+            elif fab_upp == 'FAB-MA-SECUNDARIA':
+                testar_sql_server_fab_ma_secundaria(fab ,host, db, user, pwd, port)
             elif fab_upp == 'FAB-SIZA':
                 testar_sql_server_fab_siza(fab ,host, db, user, pwd, port)
             elif fab_upp == 'FAB-ARAG':
